@@ -11,5 +11,4 @@ def browser():
             headless=False
         )
         yield browser
-        sleep(6)
         browser.close()
