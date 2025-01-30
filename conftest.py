@@ -9,6 +9,8 @@ def browser():
         browser = p.chromium.launch(
             executable_path="C:\\Users\\omergo\\Downloads\\chromium\\chrome-win\\chrome.exe",
             headless=False
+
         )
         yield browser
+
         browser.close()
