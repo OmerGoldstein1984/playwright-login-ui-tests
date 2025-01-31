@@ -33,3 +33,9 @@ def test_selectAndCheckout(browser):
     checkoutBtn.click()
     sleep(5)
 
+def test_poppup(browser):
+    with browser.expect_popup() as info_page:
+        browser.locator('.blinkingText').click()
+        docs_page = info_page.value
+        print(docs_page.locator('.red').text_content())
+
