@@ -25,12 +25,6 @@ def test_login_rahulshuttyacademy(browser):
 
 def test_selectAndCheckout(browser):
     products=['iphone X','Blackberry']
-    browser.goto('https://rahulshettyacademy.com/loginpagePractise/')
-    browser.get_by_label('username:').fill('rahulshettyacademy')
-    browser.get_by_label('password:').fill('learning')
-    browser.get_by_role('combobox').select_option('teach')
-    browser.get_by_role('link', name="terms and conditions").click()
-    browser.get_by_role('button', name='Sign In').click()
     for product in products:
        prodductContainer= browser.locator('.card').filter(has_text=product)
        btn = prodductContainer.get_by_role('button')
