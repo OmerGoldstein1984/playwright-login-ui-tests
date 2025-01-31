@@ -19,6 +19,6 @@ def browser():
         # page.get_by_role('combobox').select_option('teach')
         # page.get_by_role('link', name="terms and conditions").click()
         # page.get_by_role('button', name='Sign In').click()
-
+        sleep(3)
         yield page
         browser.close()
