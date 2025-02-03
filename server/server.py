@@ -1,28 +1,35 @@
 from flask import Flask, jsonify, request, abort
-from openpyxl import Workbook, load_workbook
+import csv
 import os
 
 app = Flask(__name__)
 
-# Excel file to store car data
-EXCEL_FILE = "cars.xlsx"
+# CSV file to store car data
+CSV_FILE = "cars.csv"
 
-# Token for authentication (in a real app, use a proper authentication system)
+# Token for authentication
 AUTH_TOKEN = "secret_token"
 
-# Helper function to load the Excel file
-def load_excel():
-    if not os.path.exists(EXCEL_FILE):
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Cars"
-        ws.append(["ID", "Make", "Model", "Year", "Color"])
-        wb.save(EXCEL_FILE)
-    return load_workbook(EXCEL_FILE)
+# Helper function to load the CSV file
+def load_csv():
+    if not os.path.exists(CSV_FILE):
+        with open(CSV_FILE, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(["ID", "Make", "Model", "Year", "Color"])
+    cars = []
+    with open(CSV_FILE, mode="r") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            cars.append(row)
+    return cars
 
-# Helper function to save the Excel file
-def save_excel(wb):
-    wb.save(EXCEL_FILE)
+# Helper function to save the CSV file
+def save_csv(cars):
+    with open(CSV_FILE, mode="w", newline="") as file:
+        fieldnames = ["ID", "Make", "Model", "Year", "Color"]
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(cars)
 
 # Helper function to validate token
 def validate_token():
@@ -40,11 +47,17 @@ def create_car():
     if not data or not all(key in data for key in ["make", "model", "year", "color"]):
         abort(400, description="Invalid input: Ensure 'make', 'model', 'year', and 'color' are provided.")
 
-    wb = load_excel()
-    ws = wb.active
-    new_id = ws.max_row  # Auto-generate ID
-    ws.append([new_id, data["make"], data["model"], data["year"], data["color"]])
-    save_excel(wb)
+    cars = load_csv()
+    new_id = len(cars) + 1  # Auto-generate ID
+    new_car = {
+        "ID": new_id,
+        "Make": data["make"],
+        "Model": data["model"],
+        "Year": data["year"],
+        "Color": data["color"]
+    }
+    cars.append(new_car)
+    save_csv(cars)
 
     return jsonify({"message": "Car created successfully", "id": new_id}), 201
 
@@ -52,22 +65,17 @@ def create_car():
 @app.route("/cars", methods=["GET"])
 def get_cars():
     validate_token()
-    wb = load_excel()
-    ws = wb.active
-    cars = []
-    for row in ws.iter_rows(min_row=2, values_only=True):  # Skip header row
-        cars.append({"id": row[0], "make": row[1], "model": row[2], "year": row[3], "color": row[4]})
+    cars = load_csv()
     return jsonify(cars)
 
 # Read a specific car by ID
 @app.route("/cars/<int:car_id>", methods=["GET"])
 def get_car(car_id):
     validate_token()
-    wb = load_excel()
-    ws = wb.active
-    for row in ws.iter_rows(min_row=2, values_only=True):  # Skip header row
-        if row[0] == car_id:
-            return jsonify({"id": row[0], "make": row[1], "model": row[2], "year": row[3], "color": row[4]})
+    cars = load_csv()
+    for car in cars:
+        if int(car["ID"]) == car_id:
+            return jsonify(car)
     abort(404, description="Car not found")
 
 # Update a car by ID
@@ -78,19 +86,18 @@ def update_car(car_id):
     if not data or not any(key in data for key in ["make", "model", "year", "color"]):
         abort(400, description="Invalid input: Provide at least one field to update ('make', 'model', 'year', or 'color').")
 
-    wb = load_excel()
-    ws = wb.active
-    for row in ws.iter_rows(min_row=2):  # Skip header row
-        if row[0].value == car_id:
+    cars = load_csv()
+    for car in cars:
+        if int(car["ID"]) == car_id:
             if "make" in data:
-                row[1].value = data["make"]
+                car["Make"] = data["make"]
             if "model" in data:
-                row[2].value = data["model"]
+                car["Model"] = data["model"]
             if "year" in data:
-                row[3].value = data["year"]
+                car["Year"] = data["year"]
             if "color" in data:
-                row[4].value = data["color"]
-            save_excel(wb)
+                car["Color"] = data["color"]
+            save_csv(cars)
             return jsonify({"message": "Car updated successfully"})
     abort(404, description="Car not found")
 
@@ -98,14 +105,12 @@ def update_car(car_id):
 @app.route("/cars/<int:car_id>", methods=["DELETE"])
 def delete_car(car_id):
     validate_token()
-    wb = load_excel()
-    ws = wb.active
-    for row in ws.iter_rows(min_row=2):  # Skip header row
-        if row[0].value == car_id:
-            ws.delete_rows(row[0].row)
-            save_excel(wb)
-            return jsonify({"message": "Car deleted successfully"})
-    abort(404, description="Car not found")
+    cars = load_csv()
+    updated_cars = [car for car in cars if int(car["ID"]) != car_id]
+    if len(updated_cars) == len(cars):
+        abort(404, description="Car not found")
+    save_csv(updated_cars)
+    return jsonify({"message": "Car deleted successfully"})
 
 # Error Handlers
 @app.errorhandler(400)
