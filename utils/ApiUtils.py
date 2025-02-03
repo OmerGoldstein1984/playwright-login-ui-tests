@@ -7,6 +7,7 @@ class ApiUtils:
     def CreateOrder(self,playwright:Playwright):
         apiRequestContext= playwright.request.new_context(base_url=self.baseUrl)
         apiRequestContext.post()
+        apiRequestContext.get()
 
 
 
