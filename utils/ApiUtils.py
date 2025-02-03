@@ -1,7 +1,15 @@
-from playwright.async_api import Playwright,async_playwright
+from playwright.async_api import async_playwright
+from playwright.sync_api import Playwright
+
+
 class ApiUtils:
     baseUrl="127.0.0.1:5000"
     def CreateOrder(self,playwright:Playwright):
-        apiRequestontext=playwright.request.new_context(base_url=self.baseUrl).post()
-        apiRequestontext.po
+        apiRequestContext= playwright.request.new_context(base_url=self.baseUrl)
+        apiRequestContext.post()
+
+
+
+
+
 
