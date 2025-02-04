@@ -9,17 +9,22 @@ class ApiUtils:
     def CreteCar(self,playwright:Playwright):
         apiRequestContext = playwright.request.new_context(base_url=self.baseUrl)
         newCar= {
-            "make": "Toyota",
-            "model": "Corolla",
-            "year": 2020,
-            "color": "Red"
+            "make": "Mazda",
+            "model": "A",
+            "year": 2022,
+            "color": "Blur"
         }
+
         response=apiRequestContext.post('/cars',data=newCar,headers=self.headers)
         if response.status==200:
             return f"Car {response.json()} created"
         else:
             print(f"Failed to create order. Status code: {response.status}")
             print(response.text())  # Print the error message
+
+
+     def getCar(self, playwright: Playwright, id):
+
 
 
 

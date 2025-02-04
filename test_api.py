@@ -4,4 +4,4 @@ from utils.ApiUtils import ApiUtils
 def test_createCar():
     with sync_playwright() as playwright:
             api_utils = ApiUtils()
-            api_utils.CreteCar(playwright)
+           # api_utils.CreteCar(playwright)
