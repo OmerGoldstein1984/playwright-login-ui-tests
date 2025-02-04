@@ -25,9 +25,9 @@ class ApiUtils():
             print(response.text())  # Print the error message
 
 
-     def getCar(self, playwright: Playwright, id):
+    def getCar(self, playwright: Playwright, id):
         apiRequestContext = playwright.request.new_context(base_url=self.baseUrl)
-        response = apiRequestContext.get('/cars/2', headers=self.headers)
+        response = apiRequestContext.get(f'/cars/{id}', headers=self.headers)
         print(response)
 
 
