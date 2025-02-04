@@ -1,11 +1,13 @@
+import playwright
 from playwright.sync_api import Playwright
 
-class ApiUtils:
+class ApiUtils():
     baseUrl="http://127.0.0.1:5000"
     headers = {
         "Authorization": "secret_token",
         "Content-Type": "application/json"
     }
+
     def CreteCar(self,playwright:Playwright):
         apiRequestContext = playwright.request.new_context(base_url=self.baseUrl)
         newCar= {
@@ -24,6 +26,9 @@ class ApiUtils:
 
 
      def getCar(self, playwright: Playwright, id):
+        apiRequestContext = playwright.request.new_context(base_url=self.baseUrl)
+        response = apiRequestContext.get('/cars/2', headers=self.headers)
+        print(response)
 
 
 
