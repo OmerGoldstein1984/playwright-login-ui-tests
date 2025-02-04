@@ -28,7 +28,7 @@ class ApiUtils():
     def getCar(self, playwright: Playwright, id):
         apiRequestContext = playwright.request.new_context(base_url=self.baseUrl)
         response = apiRequestContext.get(f'/cars/{id}', headers=self.headers)
-        print(response)
+        print(response.body())
 
 
 
