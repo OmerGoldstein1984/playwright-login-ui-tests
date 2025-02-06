@@ -13,11 +13,12 @@ def browser():
         )
         context = browser.new_context(no_viewport=True)
         page=context.new_page()
-
+        page.goto('https://rahulshettyacademy.com/AutomationPractice/')
+        # page.get_by_label('username:').fill('rahulshettyacademy')
         # page.get_by_label('password:').fill('learning')
         # page.get_by_role('combobox').select_option('teach')
         # page.get_by_role('link', name="terms and conditions").click()
         # page.get_by_role('button', name='Sign In').click()
-        sleep(5)
+        sleep(3)
         yield page
         browser.close()
