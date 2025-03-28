@@ -1,6 +1,3 @@
-from time import sleep
-from playwright.sync_api import  sync_playwright
-
 import pytest
 from playwright.sync_api import sync_playwright
 from utils.ConfigLoader import ConfigLoader

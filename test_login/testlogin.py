@@ -2,7 +2,7 @@ from conftest import config
 from pages.HomePage import home_page
 
 
-class test_login:
+class TestLogin:
     def test_registerUser_automationexcersixe(browser):
         homePage=home_page(browser,config)
         homePage.verify_Page_loaded()
