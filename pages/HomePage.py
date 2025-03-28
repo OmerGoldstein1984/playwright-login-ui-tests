@@ -1,4 +1,5 @@
 from pages.BasePage import base_page
+from pages.SignUpAndLoginPage import signup_and_login
 
 class home_page(base_page):
     LOOO = ".logo a img"
@@ -11,6 +12,7 @@ class home_page(base_page):
 
     def click_sign_in(self):
         self.click(self.SIGN_UP_IN)
+        return signup_and_login(self.page)
 
     def delete_account(self):
         self.click(self.DELETE_ACCOUNT)
