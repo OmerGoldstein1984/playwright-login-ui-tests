@@ -1,4 +1,5 @@
 from pages.BasePage import base_page
+from pages.NewAccountInfoPage import NewAccountInfo_page
 
 
 class signup_and_login(base_page):
@@ -11,3 +12,4 @@ class signup_and_login(base_page):
         self.fill(self.EMAIL,user)
         self.fill(self.PASSWORD,password)
         self.click(self.SIGN_UP_BTN)
+        return NewAccountInfo_page(self.page)
